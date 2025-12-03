@@ -1,0 +1,28 @@
+Выясни, в каких странах находятся фонды, которые чаще всего инвестируют в стартапы. 
+Для каждой страны посчитай минимальное, максимальное и среднее число компаний, в которые инвестировали фонды этой страны, основанные с 2010 по 2012 год включительно. Исключи страны с фондами, у которых минимальное число компаний, получивших инвестиции, равно нулю. 
+Выгрузи десять самых активных стран-инвесторов: отсортируй таблицу по среднему количеству компаний от большего к меньшему. Затем добавь сортировку по коду страны в лексикографическом порядке.
+
+SELECT country_code,
+    MIN(invested_companies),
+    MAX(invested_companies),
+    AVG(invested_companies)
+FROM fund
+WHERE CAST(founded_at AS DATE) BETWEEN '2010-01-01' AND '2012-12-31'
+GROUP BY country_code
+HAVING MIN(invested_companies) > 0
+ORDER BY AVG(invested_companies) DESC,
+    country_code
+LIMIT 10;
+
+Отобрази имя и фамилию всех сотрудников стартапов. Добавь поле с названием учебного заведения, которое окончил сотрудник, если эта информация известна.
+
+SELECT first_name,last_name,instituition
+FROM people as pp
+LEFT JOIN education AS ed ON pp.id = ed.person_id
+
+Найди общую сумму сделок по покупке одних компаний другими в долларах. Отбери сделки, которые осуществлялись только за наличные с 2011 по 2013 год включительно.
+
+SELECT SUM(price_amount)
+FROM acquisition
+WHERE term_code = 'cash'
+AND CAST(acquired_at AS DATE) BETWEEN '2011-01-01' AND '2013-12-31'
